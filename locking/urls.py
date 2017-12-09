@@ -1,13 +1,14 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import url, include
+from locking import views
 
-urlpatterns = patterns('locking.views',
+urlpatterns = [
     # verwijst naar een ajax-view voor het lockingmechanisme
-    (r'(?P<app>[\w-]+)/(?P<model>[\w-]+)/(?P<id>\d+)/lock/$', 'lock'),
-    (r'(?P<app>[\w-]+)/(?P<model>[\w-]+)/(?P<id>\d+)/unlock/$', 'unlock'),
-    (r'(?P<app>[\w-]+)/(?P<model>[\w-]+)/(?P<id>\d+)/is_locked/$', 'is_locked'),
-    (r'variables\.js$', 'js_variables', {}, 'locking_variables'),
-    )
+    url(r'(?P<app>[\w-]+)/(?P<model>[\w-]+)/(?P<id>\d+)/lock/$', views.lock),
+    url(r'(?P<app>[\w-]+)/(?P<model>[\w-]+)/(?P<id>\d+)/unlock/$', views.unlock),
+    url(r'(?P<app>[\w-]+)/(?P<model>[\w-]+)/(?P<id>\d+)/is_locked/$', views.is_locked),
+    url(r'variables\.js$', 'js_variables', {}, views.locking_variables),
+]
 
-urlpatterns += patterns('',
-    (r'jsi18n/$', 'django.views.i18n.javascript_catalog', {'packages': 'locking'}),
-    )
+urlpatterns += [
+    url(r'jsi18n/$', 'django.views.i18n.javascript_catalog', {'packages': 'locking'}),
+]
