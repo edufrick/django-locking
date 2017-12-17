@@ -6,7 +6,7 @@ urlpatterns = [
     url(r'(?P<app>[\w-]+)/(?P<model>[\w-]+)/(?P<id>\d+)/lock/$', views.lock),
     url(r'(?P<app>[\w-]+)/(?P<model>[\w-]+)/(?P<id>\d+)/unlock/$', views.unlock),
     url(r'(?P<app>[\w-]+)/(?P<model>[\w-]+)/(?P<id>\d+)/is_locked/$', views.is_locked),
-    # url(r'variables\.js$', 'js_variables', {}, views.locking_variables),
+    url(r'variables\.js$', views.js_variables),
 ]
 
 urlpatterns += [
