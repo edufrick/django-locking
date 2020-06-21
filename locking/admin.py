@@ -79,7 +79,7 @@ class LockableAdmin(admin.ModelAdmin):
         if lock.is_locked:
             locked_by = lock.locked_by.username
             seconds_remaining = lock.lock_seconds_remaining
-            minutes_remaining = seconds_remaining / 60
+            minutes_remaining = seconds_remaining // 60
             locked_until = _("Still locked for %s more minute(s) by %s.") % (
                 minutes_remaining,
                 lock.locked_by,

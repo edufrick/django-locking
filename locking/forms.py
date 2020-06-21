@@ -32,6 +32,6 @@ class LockingForm(forms.ModelForm):
             if lock.locked_by != self.request.user and lock.lock_type == "hard":
                 raise forms.ValidationError(
                     "You cannot save this object because it is locked by user %s for roughly %s more minute(s)."
-                    % (lock.locked_by.username, lock.lock_seconds_remaining / 60)
+                    % (lock.locked_by.username, lock.lock_seconds_remaining // 60)
                 )
         return self.cleaned_data
