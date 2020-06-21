@@ -1,7 +1,11 @@
 # encoding: utf-8
 
+from __future__ import absolute_import
+
 from django.contrib.contenttypes.models import ContentType
+
 from locking.models import Lock
+
 
 def gather_lockable_models():
     lockable_models = dict()

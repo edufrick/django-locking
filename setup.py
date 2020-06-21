@@ -1,5 +1,10 @@
+from __future__ import absolute_import
+
 import os
-from setuptools import setup, find_packages
+
+from setuptools import find_packages
+from setuptools import setup
+
 version = '0.3.7'
 README = os.path.join(os.path.dirname(__file__), 'README.md')
 long_description = open(README).read()

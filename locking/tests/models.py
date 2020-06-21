@@ -1,5 +1,9 @@
+from __future__ import absolute_import
+
 from django.db import models
+
 from locking import models as locking
+
 
 class Story(locking.LockableModel):
     content = models.TextField(blank=True)

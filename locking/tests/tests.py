@@ -1,13 +1,19 @@
-from datetime import datetime, timedelta
-import simplejson
+from __future__ import absolute_import
 
+from datetime import datetime
+from datetime import timedelta
+
+import simplejson
+from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test.client import Client
-from django.contrib.auth.models import User
 
-from locking import models, views, LOCK_TIMEOUT
-from locking.tests.utils import TestCase
+from locking import LOCK_TIMEOUT
+from locking import models
+from locking import views
 from locking.tests import models as testmodels
+from locking.tests.utils import TestCase
+
 
 class AppTestCase(TestCase):
     fixtures = ['locking_scenario',]

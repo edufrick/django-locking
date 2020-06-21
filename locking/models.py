@@ -1,18 +1,25 @@
 # encoding: utf-8
 
-from datetime import datetime, timedelta
+from __future__ import absolute_import
 
-from django.db import models
+from datetime import datetime
+from datetime import timedelta
+
 from django.conf import settings
+from django.db import models
+
+from locking import logger
+from locking import managers
+
 try:
     from account import models as auth
-except:
+except ImportError:
     from django.contrib.auth import models as auth
-from locking import logger
-import managers
+
 
 class ObjectLockedError(IOError):
     pass
+
 
 class Lock(models.Model):
     """ LockableModel comes with three managers: ``objects``, ``locked`` and
@@ -28,9 +35,7 @@ class Lock(models.Model):
         super(Lock, self).__init__(*vargs, **kwargs)
         self._state.locking = False
 
-    _locked_at = models.DateTimeField(db_column='locked_at',
-        null=True,
-        editable=False)
+    _locked_at = models.DateTimeField(db_column="locked_at", null=True, editable=False)
 
     app = models.CharField(max_length=255, null=True)
 
@@ -38,14 +43,17 @@ class Lock(models.Model):
 
     entry_id = models.PositiveIntegerField(db_index=True)
 
-    _locked_by = models.ForeignKey(auth.User,
-        db_column='locked_by',
+    _locked_by = models.ForeignKey(
+        auth.User,
+        db_column="locked_by",
         related_name="working_on_%(class)s",
         null=True,
-        editable=False)
+        editable=False,
+    )
 
-    _hard_lock = models.BooleanField(db_column='hard_lock', default=False,
-                                     editable=False)
+    _hard_lock = models.BooleanField(
+        db_column="hard_lock", default=False, editable=False
+    )
 
     # We don't want end-developers to manipulate database fields directly,
     # hence we're putting these behind simple getters.
@@ -84,7 +92,7 @@ class Lock(models.Model):
         """
         if isinstance(self.locked_at, datetime):
             # tue -> time delta until expiration
-            _tue = timedelta(seconds=settings.LOCKING['time_until_expiration'])
+            _tue = timedelta(seconds=settings.LOCKING["time_until_expiration"])
             if (datetime.today() - self.locked_at) < _tue:
                 return True
             else:
@@ -104,7 +112,7 @@ class Lock(models.Model):
         If you want to extend a lock beyond its current expiry date, initiate
         a new lock using the ``lock_for`` method.
         """
-        _tue = timedelta(settings.LOCKING['time_until_expiration'])
+        _tue = timedelta(settings.LOCKING["time_until_expiration"])
         diff = _tue - (datetime.today() - self.locked_at)
         return (diff.days * 24 * 60 * 60) + diff.seconds
 
@@ -133,20 +141,21 @@ class Lock(models.Model):
             raise ValueError("You should pass a valid auth.User to lock_for.")
 
         if self.lock_applies_to(user):
-            raise ObjectLockedError("This object is already locked by another"
-                " user. May not override, except through the `unlock` method.")
+            raise ObjectLockedError(
+                "This object is already locked by another"
+                " user. May not override, except through the `unlock` method."
+            )
         else:
             self._locked_at = datetime.today()
             self._locked_by = user
             self._hard_lock = self.__init_hard_lock = hard_lock
-            date = self.locked_at.strftime("%H:%M:%S")
             # an administrative toggle, to make it easier for devs to extend `django-locking`
             # and react to locking and unlocking
             self._state.locking = True
             logger.debug(
-                "Initiated a %s lock for `%s` at %s" % (
-                self.lock_type, self.locked_by, self.locked_at
-                ))
+                "Initiated a %s lock for `%s` at %s"
+                % (self.lock_type, self.locked_by, self.locked_at)
+            )
 
     def unlock(self):
         """
@@ -169,8 +178,7 @@ class Lock(models.Model):
         Will raise a ObjectLockedError exception when the current user isn't
         authorized to unlock the object.
         """
-        logger.debug("Attempting to open up a lock on `%s` by user `%s`" % (
-                                                                  self, user))
+        logger.debug("Attempting to open up a lock on `%s` by user `%s`" % (self, user))
         self.unlock()
 
     def lock_applies_to(self, user):
@@ -179,8 +187,7 @@ class Lock(models.Model):
         ``lock_applies_to`` is used to ascertain whether a user is allowed
         to edit a locked object.
         """
-        logger.debug("Checking if the lock on `%s` applies to user `%s`" % (
-                                                                  self, user))
+        logger.debug("Checking if the lock on `%s` applies to user `%s`" % (self, user))
         # a lock does not apply to the person who initiated the lock
         if self.is_locked and self.locked_by != user:
             logger.debug("Lock applies.")
