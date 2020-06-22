@@ -7,9 +7,10 @@ from locking import models as locking
 
 class Story(locking.LockableModel):
     content = models.TextField(blank=True)
-    
+
     class Meta:
-        verbose_name_plural = 'stories'
+        verbose_name_plural = "stories"
+
 
 class Unlockable(models.Model):
     # this model serves to test that utils.gather_lockable_models

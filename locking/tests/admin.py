@@ -9,7 +9,11 @@ from locking.tests.models import Story
 
 
 class StoryAdmin(LockableAdmin):
-    list_display = ('lock', 'content', )
-    list_display_links = ('content', )
+    list_display = (
+        "lock",
+        "content",
+    )
+    list_display_links = ("content",)
+
 
 admin.site.register(Story, StoryAdmin)
