@@ -2,19 +2,14 @@ from __future__ import absolute_import
 
 import simplejson
 from django.conf import settings
-from django.core.urlresolvers import reverse
 from django.http import HttpResponse
+from django.urls import reverse
 
-from locking import LOCK_TIMEOUT
-from locking import logger
+from locking import LOCK_TIMEOUT, logger
 from locking import settings as _s
 from locking import utils
-from locking.decorators import is_lockable
-from locking.decorators import log
-from locking.decorators import user_may_change_model
-from locking.models import Lock
-from locking.models import ObjectLockedError
-
+from locking.decorators import is_lockable, log, user_may_change_model
+from locking.models import Lock, ObjectLockedError
 
 """
 These views are called from javascript to open and close assets (objects), in order
