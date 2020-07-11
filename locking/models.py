@@ -2,14 +2,12 @@
 
 from __future__ import absolute_import
 
-from datetime import datetime
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 from django.conf import settings
 from django.db import models
 
-from locking import logger
-from locking import managers
+from locking import logger, managers
 
 try:
     from account import models as auth
@@ -49,6 +47,7 @@ class Lock(models.Model):
         related_name="working_on_%(class)s",
         null=True,
         editable=False,
+        on_delete=models.SET_NULL,
     )
 
     _hard_lock = models.BooleanField(
