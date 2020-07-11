@@ -2,10 +2,9 @@ from __future__ import absolute_import
 
 import os
 
-from setuptools import find_packages
-from setuptools import setup
+from setuptools import find_packages, setup
 
-version = "0.3.9"
+version = "0.4.0"
 README = os.path.join(os.path.dirname(__file__), "README.md")
 long_description = open(README).read()
 setup(
